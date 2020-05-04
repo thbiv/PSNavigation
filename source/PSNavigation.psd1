@@ -4,10 +4,10 @@
 RootModule = 'PSNavigation.psm1'
 
 # Version number of this module.
-ModuleVersion = '2.1.75'
+ModuleVersion = '2.2.76'
 
 # Supported PSEditions
-# CompatiblePSEditions = @()
+CompatiblePSEditions = @('Desktop','Core')
 
 # ID used to uniquely identify this module
 GUID = '36534e22-621b-4ff5-9be6-651e405694ee'
@@ -19,16 +19,16 @@ Author = 'Thomas Barratt'
 CompanyName = 'THBIV'
 
 # Copyright statement for this module
-Copyright = '2013-2018'
+Copyright = '2013-2020'
 
 # Description of the functionality provided by this module
 Description = 'Module to make it easier to navigate in Powershell.'
 
 # Minimum version of the Windows PowerShell engine required by this module
-PowerShellVersion = '5.0'
+PowerShellVersion = '5.1'
 
 # Name of the Windows PowerShell host required by this module
-PowerShellHostName = 'ConsoleHost'
+PowerShellHostName = ''
 
 # Minimum version of the Windows PowerShell host required by this module
 # PowerShellHostVersion = ''

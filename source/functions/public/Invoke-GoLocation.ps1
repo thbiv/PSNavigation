@@ -1,31 +1,6 @@
 Function Invoke-GoLocation {
     <#
-    .SYNOPSIS
-    Sets the location of the console to the path associated to the id given.
-
-    .DESCRIPTION
-    Sets the location of the console to the path associated to the id given.
-
-    .PARAMETER Id
-    Name of the Nav location to invoke.
-
-    .EXAMPLE
-    PS C:\> Invoke-GoLocation scripts
-
-    This example will change the location of the console to the path assiciated
-    with the scripts id. In this example, if the scripts id points to a path
-    of C:\Scripts, the result displayed is:
-
-    PS C:\Scripts>
-
-    .EXAMPLE
-    PS C:\> Go scripts
-
-    This example if the same as example 1 but using the Go alias for
-    Invoke-GoLocation
-
-    .NOTES
-    Written by: Thomas Barratt
+    .EXTERNALHELP PSNavigation-help.xml
     #>
     [CmdletBinding(SupportsShouldProcess)]
     Param(

@@ -1,6 +1,10 @@
 Deploy PSNavigation {
-    By PSGalleryModule {
+    By PSGalleryModule DeployModule {
         FromSource "$PSScriptRoot\_output\PSNavigation"
-        To SFGallery
+        To PSLocalGallery
     }
+    #By FileSystem DeployOnlineHelp {
+    #    FromSource "$PSScriptRoot\docs"
+    #    To ""
+    #}
 }

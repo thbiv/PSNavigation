@@ -1,36 +1,6 @@
 Function Remove-NavLocation {
     <#
-    .SYNOPSIS
-    Removes a Powershell bookmark from the Go database.
-
-    .DESCRIPTION
-    Removes a Powershell bookmark from the Go database.
-
-    .PARAMETER Id
-    The name of the location to be removed from the database.
-    Cannot be used with the All parameter
-
-    .PARAMETER All
-    Removes all Powershell bookmarks from the Go Database
-    Cannot be used with the Id parameter.
-
-    .EXAMPLE
-    PS C:\> Remove-GoLocation -Id c
-
-    This example will remove the location named c from the database.
-
-    .EXAMPLE
-    PS C:\> Remove-GoLocation c
-
-    This example will remove the location named c from the database.
-
-    .EXAMPLE
-    PS C:\> Remove-GoLocation -All
-
-    This example will remove all locations from the database
-
-    .NOTES
-    Written by: Thomas Barratt
+    .EXTERNALHELP PSNavigation-help.xml
     #>
     [CmdletBinding(SupportsShouldProcess=$True)]
     Param(

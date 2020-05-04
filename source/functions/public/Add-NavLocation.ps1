@@ -1,38 +1,6 @@
 Function Add-NavLocation {
     <#
-    .SYNOPSIS
-    Adds a Powershell bookmark to the Nav database.
-
-    .DESCRIPTION
-    Adds a Powershell bookmark to the Nav database with the name of the location
-    and the path to the location.
-
-    .PARAMETER Id
-    The name of the location you want to store. This name will be used when invoking
-    the path to the Powershell console. Length can be from 1 to 15 characters.
-
-    .PARAMETER Location
-    The path of the location to store.  Can be a local path or a UNC path.
-
-    .EXAMPLE
-    PS C:\> Add-NavLocation -Id c -Location C:\
-
-    This example will add a NavLocation to the database named C that points to C:\
-
-    .EXAMPLE
-    PS C:\> Add-NavLocation c C:\
-
-    This example will add a NavLocation to the database named C that points to C:\
-
-    .EXAMPLE
-    PS C:\> Add-NavLocation -Id c
-
-    This example will add a NavLocation to the database named c.  Since the location
-    parameter was not given, the cmdlet will insert the current location of the console
-    as the path. This will have the same affect as examples 1 and 2.
-
-    .NOTES
-    Written by: Thomas Barratt
+    .EXTERNALHELP PSNavigation-help.xml
     #>
     [CmdletBinding(SupportsShouldProcess=$True)]
     Param(

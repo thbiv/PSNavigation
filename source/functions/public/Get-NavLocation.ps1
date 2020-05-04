@@ -1,21 +1,6 @@
 Function Get-NavLocation {
     <#
-    .SYNOPSIS
-    Returns objects containing entries in the Nav Database.
-
-    .DESCRIPTION
-    Returns objects containing entries in the Nav Database.
-
-    .EXAMPLE
-    PS C:\> Get-NavLocation
-
-    This example will retrieve all the entries in the Nav database and display them to the host.
-
-    .OUTPUTS
-    PSNavigationLocation
-
-    .NOTES
-    Written by: Thomas Barratt
+    .EXTERNALHELP PSNavigation-help.xml
     #>
     [CmdletBinding(SupportsPaging)]
     [OutputType([PSNavigationLocation])]
