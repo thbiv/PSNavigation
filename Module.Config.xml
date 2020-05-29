@@ -1,0 +1,24 @@
+<config>
+  <deployment>
+    <repository>PSLocalGallery</repository>
+    <onlinehelp>
+    </onlinehelp>
+    <filehash>C:\Users\thbarratt\Documents\FileHashData\PasswordFilter</filehash>
+    <testresults>C:\Users\thbarratt\Documents\TestResults\PasswordFilter</testresults>
+  </deployment>
+  <manifest>
+    <guid>36534e22-621b-4ff5-9be6-651e405694ee</guid>
+    <author>Thomas Barratt</author>
+    <moduleversion>2.2.95</moduleversion>
+    <description>Module to make it easier to navigate in Powershell.</description>
+    <copyright>2013-2020</copyright>
+    <companyname>THBIV</companyname>
+  </manifest>
+  <requiredmodules>
+    <module name="InvokeBuild" Repository="PSGallery" />
+    <module name="Pester" Repository="PSGallery" RequiredVersion="4.10.1" />
+    <module name="PSScriptAnalyzer" Repository="PSGallery" />
+    <module name="PSProjects" Repository="PSLocalGallery" />
+    <module name="platyPS" Repository="PSGallery" />
+  </requiredmodules>
+</config>
