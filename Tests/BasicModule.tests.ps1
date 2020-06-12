@@ -32,7 +32,7 @@ Describe 'PSSA Standard Rules' {
 	$Scripts = Get-ChildItem $Path -Include *.ps1, *.psm1, *.psd1 -Recurse
 	ForEach ($Script in $Scripts) {
 		Context "$($Script.Name)" {
-			$Analysis = Invoke-ScriptAnalyzer -Path $($Script.FullName)
+			$Analysis = Invoke-ScriptAnalyzer -Path $($Script.FullName) -Settings "$PSScriptRoot\PSScriptAnalyzerSettings.psd1"
 			$ScriptAnalyzerRules = Get-ScriptAnalyzerRule
 			ForEach ($Rule in $ScriptAnalyzerRules) {
 				It "Should pass $Rule" {

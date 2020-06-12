@@ -29,7 +29,7 @@ ForEach ($Module in $RequiredModules) {
             Scope = 'CurrentUser'
             Force = $True
         }
-        If ($Null -ne $Module.requiredversion) {$Params += @{RequiredVersion = $($Module.requireduversion)}}
+        If ($Null -ne $Module.requiredversion) {$Params += @{RequiredVersion = $($Module.requiredversion)}}
         If ($Null -ne $Module.repository) {$Params += @{Repository = $($Module.repository)}}
         Install-Module @Params
         Write-Host "Done" -ForegroundColor Green
