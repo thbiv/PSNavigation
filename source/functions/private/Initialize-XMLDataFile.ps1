@@ -2,6 +2,10 @@ Function Initialize-XMLDataFile {
 	Param(
 		[Parameter(Mandatory=$True)][string]$Path
 	)
+	$ParentPath = Split-Path -Path $Path -Parent
+	If (!(Test-Path -Path $ParentPath)) {
+		New-Item -Path $ParentPath -ItemType Directory -Force
+	}
 	$DateTimeStamp = (Get-Date -Format "MM/dd/yyy-THH:mm:ss")
 	$XMLWriter = New-Object System.XML.XmlTextWriter($Path,$Null)
 	$XMLWriter.Formatting = 'Indented'
