@@ -109,6 +109,10 @@ Task CompileManifestFile {
         Description = $($ModuleConfig.config.manifest.description)
         Copyright = $($ModuleConfig.config.manifest.copyright)
         CompanyName = $($ModuleConfig.config.manifest.companyName)
+        ProjectUri = $($ModuleConfig.config.manifest.projecturi)
+        LicenseUri = $($ModuleConfig.config.manifest.licenseuri)
+        ReleaseNotes = $($ModuleConfig.config.manifest.releasenotes)
+        Tags = $($($ModuleConfig.config.manifest.tags).split(','))
         FunctionsToExport = $(((Get-ChildItem -Path "$SourceRoot\functions\public").basename))
         FormatsToProcess = $(((Get-ChildItem -Path "$SourceRoot\formats").Name))
         CmdletsToExport = @()
@@ -131,6 +135,10 @@ Task CompileHelp {
             Write-Host 'Creating About Help file(s)'
             New-ExternalHelp -Path "$DocsRoot\about_help" -OutputPath "$OutputRoot\$ModuleName\en-US" -Force | Out-Null
         }
+    }
+    If (Test-Path -Path "$BuildRoot\LICENSE") {
+        Write-Host 'Adding license file'
+        Copy-Item -Path "$BuildRoot\LICENSE" -Destination "$OutputRoot\$ModuleName\LICENSE"
     }
 }
 
