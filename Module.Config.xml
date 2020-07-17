@@ -1,6 +1,6 @@
 <config>
   <deployment>
-    <repository>PSLocalGallery</repository>
+    <repository>PSGallery</repository>
     <onlinehelp>
     </onlinehelp>
     <filehash>C:\Users\thbarratt\Documents\FileHashData\PSNavigation</filehash>
@@ -11,8 +11,7 @@
     <author>Thomas Barratt</author>
     <moduleversion>2.2.106</moduleversion>
     <description>A powershell module for making it easier to navigate to your favorite or most used directories.</description>
-    <copyright>2013-2020</copyright>
-    <companyname>THBIV</companyname>
+    <copyright>2013-2020 Thomas Barratt</copyright>
     <projecturi>https://github.com/thbiv/PSNavigation</projecturi>
     <licenseuri>https://github.com/thbiv/PSNavigation/blob/master/LICENSE</licenseuri>
     <releasenotes>https://github.com/thbiv/PSNavigation/blob/master/Release-Notes.md</releasenotes>

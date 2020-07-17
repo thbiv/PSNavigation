@@ -108,13 +108,14 @@ Task CompileManifestFile {
         Author = $($ModuleConfig.config.manifest.author)
         Description = $($ModuleConfig.config.manifest.description)
         Copyright = $($ModuleConfig.config.manifest.copyright)
-        CompanyName = $($ModuleConfig.config.manifest.companyName)
         ProjectUri = $($ModuleConfig.config.manifest.projecturi)
         LicenseUri = $($ModuleConfig.config.manifest.licenseuri)
         ReleaseNotes = $($ModuleConfig.config.manifest.releasenotes)
         Tags = $($($ModuleConfig.config.manifest.tags).split(','))
         FunctionsToExport = $(((Get-ChildItem -Path "$SourceRoot\functions\public").basename))
         FormatsToProcess = $(((Get-ChildItem -Path "$SourceRoot\formats").Name))
+        CompatiblePSEditions = "Desktop","Core"
+        PowershellVersion = '5.1'
         CmdletsToExport = @()
         AliasesToExport = $ExportAlias
         VariablesToExport = @()
@@ -194,21 +195,20 @@ Task SaveHash {
 
 # Synopsis: Publish to repository
 Task PublishModule {
+    $SecureString = Get-Content -Path "$HOME\Documents\NugetAPIKey.txt" | ConvertTo-SecureString
+    $ApiKey = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR((($SecureString))))
     $Repository = $ModuleConfig.config.deployment.repository
     Write-Host "Publishing Module to $Repository"
     $Params = @{
         Path = "$OutputRoot\$ModuleName"
         Repository = $Repository
+        NuGetApiKey = $ApiKey
         Force = $True
     }
     Publish-Module @Params
 }
 
-Task PublishOnlineHelp {
-
-}
-
-Task Deploy PublishModule, PublishOnlineHelp
+Task Deploy PublishModule
 
 Task . CleanAndPrep, Build, Test, SaveResults, Hash, SaveHash, Deploy
 Task Testing CleanAndPrep, Build, Test, SaveResults
