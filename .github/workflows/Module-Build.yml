@@ -74,3 +74,17 @@ jobs:
           name: file-hash
           path: _filehash\*
           retention-days: 1
+
+      - name: Publish to PSGallery
+        run: |
+          $Params = @{
+            Path = .\_output\$env:GH_PROJECTNAME
+            NuGetApiKey = $env:PSGALLERYAPIKEY
+            ErrorAction = 'Stop'
+            Force = $True
+            WhatIf = $True
+          }
+          Publish-Module @Params
+        shell: pwsh
+        env:
+          PSGALLERYAPIKEY: ${{ secrets.PSGALLERYAPIKEY }}
