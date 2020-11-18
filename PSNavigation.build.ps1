@@ -1,8 +1,3 @@
-Param (
-    [switch]$BumpMajorVersion,
-    [switch]$BumpMinorVersion
-)
-
 $Script:ModuleName = Split-Path -Path $PSScriptRoot -Leaf
 $Script:SourceRoot = "$BuildRoot\source"
 $Script:DocsRoot = "$BuildRoot\docs"
@@ -80,14 +75,7 @@ Task CompileFormats {
 }
 
 # Synopsis: Compile the manifest file (PSD1)
-Task CompileManifestFile {
-    $Version = [version]$($ModuleConfig.config.manifest.moduleversion)
-    If ($BumpMajorVersion) {$MajorVersion = $($Version.Major + 1)}
-    Else {$MajorVersion = $($Version.Major)}
-    If ($BumpMinorVersion) {$MinorVersion = $($Version.Minor + 1)}
-    Else {$MinorVersion = $($Version.Minor)}
-    $NewVersion = "{0}.{1}.{2}" -f $MajorVersion,$MinorVersion,$($Version.Build + 1)
-    
+Task CompileManifestFile {   
     # Find Aliases to Export
     $Code = Get-Content ".\_output\PSNavigation\PSNavigation.psm1" -Raw
     $Tokens = [System.Management.Automation.PSParser]::Tokenize($code,[ref]$null)
@@ -104,7 +92,7 @@ Task CompileManifestFile {
         Path = $Dest_PSD1
         RootModule = "$ModuleName.psm1"
         GUID = $($ModuleConfig.config.manifest.guid)
-        ModuleVersion = $NewVersion
+        ModuleVersion = [version]$($ModuleConfig.config.manifest.moduleversion)
         Author = $($ModuleConfig.config.manifest.author)
         Description = $($ModuleConfig.config.manifest.description)
         Copyright = $($ModuleConfig.config.manifest.copyright)
@@ -168,14 +156,6 @@ Task Test {
     Else {Write-Host "All tests have passed."}
 }
 
-Task SaveResults {
-    Write-Host "Copying Test Results"
-    If (Test-Path -Path $($ModuleConfig.config.deployment.testresults)) {
-        Copy-Item -Path "$TestResultsRoot\*.xml" -Destination "$($ModuleConfig.config.deployment.testresults)\XML" -Force | Out-Null
-        Copy-Item -Path "$TestResultsRoot\*.html" -Destination "$($ModuleConfig.config.deployment.testresults)\HTML" -Force | Out-Null
-    } 
-}
-
 # Synopsis: Produce File Hash for all output files
 Task Hash {
     $Manifest = Import-PowerShellDataFile -Path $Dest_PSD1
@@ -188,27 +168,4 @@ Task Hash {
     $HashOutput | Export-Clixml -Path "$FileHashRoot\$HashExportFile"
 }
 
-Task SaveHash {
-    Write-Host "Copying FileHash data"
-    Copy-Item -Path $FileHashRoot -Destination "$Home\Documents\FileHashData\$ModuleName" -Force | Out-Null
-}
-
-# Synopsis: Publish to repository
-Task PublishModule {
-    $SecureString = Get-Content -Path "$HOME\Documents\NugetAPIKey.txt" | ConvertTo-SecureString
-    $ApiKey = [Runtime.InteropServices.Marshal]::PtrToStringAuto([Runtime.InteropServices.Marshal]::SecureStringToBSTR((($SecureString))))
-    $Repository = $ModuleConfig.config.deployment.repository
-    Write-Host "Publishing Module to $Repository"
-    $Params = @{
-        Path = "$OutputRoot\$ModuleName"
-        Repository = $Repository
-        NuGetApiKey = $ApiKey
-        Force = $True
-    }
-    Publish-Module @Params
-}
-
-Task Deploy PublishModule
-
-Task . CleanAndPrep, Build, Test, SaveResults, Hash, SaveHash, Deploy
-Task Testing CleanAndPrep, Build, Test, SaveResults
+Task . CleanAndPrep, Build, Test, Hash

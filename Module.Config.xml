@@ -1,11 +1,4 @@
 <config>
-  <deployment>
-    <repository>PSGallery</repository>
-    <onlinehelp>
-    </onlinehelp>
-    <filehash>C:\Users\thbarratt\Documents\FileHashData\PSNavigation</filehash>
-    <testresults>C:\Users\thbarratt\Documents\TestResults\PSNavigation</testresults>
-  </deployment>
   <manifest>
     <guid>36534e22-621b-4ff5-9be6-651e405694ee</guid>
     <author>Thomas Barratt</author>
@@ -14,20 +7,13 @@
     <copyright>2013-2020 Thomas Barratt</copyright>
     <projecturi>https://github.com/thbiv/PSNavigation</projecturi>
     <licenseuri>https://github.com/thbiv/PSNavigation/blob/master/LICENSE</licenseuri>
-    <releasenotes>https://github.com/thbiv/PSNavigation/blob/master/Release-Notes.md</releasenotes>
+    <releasenotes>https://github.com/thbiv/PSNavigation/blob/master/CHANGELOG.md</releasenotes>
     <tags>PSNavigation,navigation,powershell,Windows</tags>
   </manifest>
-  <psrepos>
-    <psrepo>
-      <name>PSLocalGallery</name>
-      <installationpolicy>Trusted</installationpolicy>
-      <sourcelocation>C:\ProgramData\PSLocaLGallery\Repository</sourcelocation>
-    </psrepo>
-  </psrepos>
   <requiredmodules>
-    <module name="InvokeBuild" repository="PSGallery" />
-    <module name="Pester" repository="PSGallery" requiredversion="4.10.1" />
-    <module name="PSScriptAnalyzer" repository="PSGallery" />
-    <module name="platyPS" repository="PSGallery" />
+    <module name="InvokeBuild" />
+    <module name="Pester" requiredversion="4.10.1" />
+    <module name="PSScriptAnalyzer" />
+    <module name="platyPS" />
   </requiredmodules>
 </config>

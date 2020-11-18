@@ -1,0 +1,59 @@
+name: Module-Build
+
+on:
+  push:
+    branches:
+      - actions
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - name: Clone-Repository
+        uses: actions/checkout@v2
+
+      - name: Set Environment Variables
+        run: |
+          [xml]$ModuleConfig = Get-Content Module.Config.xml
+          Write-Output ("ScriptBuildNumber={0}" -f $($ModuleConfig.config.manifest.moduleversion)) | Add-Content -Path $env:GITHUB_ENV
+          $Username, $ProjectName = $env:GITHUB_REPOSITORY -split "/"
+          @( 
+            "GH_USERNAME={0}" -f $Username
+            "GH_PROJECTNAME={0}" -f $ProjectName
+          ) | Add-Content -Path $env:GITHUB_ENV
+        shell: pwsh
+
+      - name: Install Dependencies
+        run:  |
+          [xml]$ModuleConfig = Get-Content Module.Config.xml
+          $RequiredModules = $ModuleConfig.config.requiredmodules.module
+          ForEach ($Module in $RequiredModules) {
+            Write-Host "  Installing $($Module.name)..." -NoNewline
+            $Params = @{
+              Name = $($Module.name)
+              Scope = 'CurrentUser'
+              Force = $True
+              ErrorAction = 'Stop'
+            }
+            If ($Null -ne $Module.requiredversion) {$Params += @{RequiredVersion = $($Module.requiredversion)}}
+            Install-Module @Params
+            Write-Host "Done"
+          }
+        shell: pwsh
+       
+      - name: Build
+        run: |
+          [xml]$ModuleConfig = Get-Content Module.Config.xml
+          $RequiredModules = $ModuleConfig.config.requiredmodules.module
+          ForEach ($Module in $RequiredModules) {
+            Write-Host "  Importing $($Module.name)..." -NoNewline
+            $Params = @{
+              Name = $($Module.name)
+              ErrorAction = 'Stop'
+            }
+            If ($Null -ne $Module.requiredversion) {$Params += @{RequiredVersion = $($Module.requiredversion)}}
+            Import-Module @Params
+            Write-Host "Done"
+          }
+          Invoke-Build
+        shell: pwsh
