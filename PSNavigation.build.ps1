@@ -140,8 +140,7 @@ Task Test {
         PassThru = $True
     }
     $Results = Invoke-Pester @PesterBasic
-    $Manifest = Import-PowerShellDataFile -Path $Dest_PSD1
-    $FileName = "Results_{0}_{1}" -f $ModuleName, $($Manifest.ModuleVersion)
+    $FileName = 'Pester-Test-Results'
     $Results | Export-Clixml -Path "$TestResultsRoot\$FileName.xml"
     Write-Host "Processing Pester Results"
     $PreContent = @()
@@ -158,13 +157,12 @@ Task Test {
 
 # Synopsis: Produce File Hash for all output files
 Task Hash {
-    $Manifest = Import-PowerShellDataFile -Path $Dest_PSD1
     $Files = Get-ChildItem -Path "$OutputRoot\$ModuleName" -File -Recurse
     $HashOutput = @()
     ForEach ($File in $Files) {
         $HashOutput += Get-FileHash -Path $File.fullname
     }
-    $HashExportFile = "ModuleFiles_Hash_$ModuleName.$($Manifest.ModuleVersion).xml"
+    $HashExportFile = "FileHash.xml"
     $HashOutput | Export-Clixml -Path "$FileHashRoot\$HashExportFile"
 }
 

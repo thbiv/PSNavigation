@@ -15,12 +15,15 @@ jobs:
       - name: Set Environment Variables
         run: |
           [xml]$ModuleConfig = Get-Content Module.Config.xml
-          Write-Output ("ScriptBuildNumber={0}" -f $($ModuleConfig.config.manifest.moduleversion)) | Add-Content -Path $env:GITHUB_ENV
+          Write-Output ("ModuleVersion={0}" -f $($ModuleConfig.config.manifest.moduleversion)) | Add-Content -Path $env:GITHUB_ENV
+          Write-Host "ModuleVersion = $($ModuleConfig.config.manifest.moduleversion)"
           $Username, $ProjectName = $env:GITHUB_REPOSITORY -split "/"
           @( 
             "GH_USERNAME={0}" -f $Username
             "GH_PROJECTNAME={0}" -f $ProjectName
           ) | Add-Content -Path $env:GITHUB_ENV
+          Write-Host "GH_USERNAME = $Username"
+          Write-Host "GH_PROJECTNAME = $ProjectName"
         shell: pwsh
 
       - name: Install Dependencies
@@ -57,3 +60,17 @@ jobs:
           }
           Invoke-Build
         shell: pwsh
+
+      - name: Test Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-results
+          path: _testresults\*
+          retention-days: 1
+      
+      - name: File Hash Artifacts
+        uses: actions/upload-artifact@v2
+        with:
+          name: file-hash
+          path: _filehash\*
+          retention-days: 1
