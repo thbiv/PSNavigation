@@ -168,8 +168,8 @@ Task Test PesterTest, ConvertTestResultsToHTML
 # Synopsis: Get Release Notes
 Task ReleaseNotes {
     $EmptyChangeLog = $True
-    $ReleaseNotes = ForEach ($Property in $Script:ChangeLog.Unreleased[0].Data.PSObject.Properties.Name) {
-        $Data = $Script:ChangeLog.Unreleased[0].Data.$Property
+    $ReleaseNotes = ForEach ($Property in $Script:ChangeLog.Unreleased.Data.PSObject.Properties.Name) {
+        $Data = $Script:ChangeLog.Unreleased.Data.$Property
         If ($Data) {
             $EmptyChangeLog = $False
             Write-Output $Property
