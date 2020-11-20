@@ -166,7 +166,7 @@ TD {border-width: 1px; padding: 3px; border-style: solid; border-color: black;}
 Task Test PesterTest, ConvertTestResultsToHTML
 
 # Synopsis: Get Release Notes
-Task ReleaseNotes {
+Task GetReleaseNotes {
     $ChangeLog = Get-ChangelogData
     $EmptyChangeLog = $True
     $ReleaseNotes = ForEach ($Property in $ChangeLog.Unreleased[0].Data.PSObject.Properties.Name) {
@@ -187,8 +187,13 @@ Task ReleaseNotes {
     Set-Content -Value $ReleaseNotes -Path $OutputRoot\Release-Notes.txt -Force
 }
 
+# Synopsis: Move unlreleased changes to a release version
 Task UpdateChangeLog {
-    Update-Changelog -ReleaseVersion $($env:ModuleVersion) -LinkMode None
+    $Params = @{
+        ReleaseVersion = $($env:ModuleVersion)
+        LinkMode = 'None'
+    }
+    Update-Changelog @Params
 }
 
 # Synopsis: Produce File Hash for all output files
@@ -202,4 +207,4 @@ Task Hash {
     $HashOutput | Export-Clixml -Path "$FileHashRoot\$HashExportFile"
 }
 
-Task . CleanAndPrep, Build, Test, ReleaseNotes, UpdateChangeLog, Hash
+Task . CleanAndPrep, Build, Test, GetReleaseNotes, UpdateChangeLog, Hash

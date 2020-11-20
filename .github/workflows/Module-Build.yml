@@ -3,7 +3,7 @@ name: Module-Build
 on:
   push:
     branches:
-      - actions
+      - idonotexist
 
 jobs:
   build:
@@ -67,31 +67,31 @@ jobs:
         with:
           name: test-results
           path: _testresults\Pester-Test-Results.html
-          retention-days: 1
       
       - name: File Hash Artifacts
+        if: "contains(github.event.head_commit.message, ':release:')"
         uses: actions/upload-artifact@v2
         with:
           name: file-hash
           path: _filehash\FileHash.xml
-          retention-days: 1
 
-    #  - name: Publish to PSGallery
-    #    run: |
-    #      $Params = @{
-    #        Path = ".\_output\$env:GH_PROJECTNAME"
-    #        NuGetApiKey = "$env:PSGALLERYAPIKEY"
-    #        ErrorAction = 'Stop'
-    #        Force = $True
-    #        WhatIf = $True
-    #      }
-    #      Publish-Module @Params
-    #    shell: pwsh
-    #    env:
-    #      PSGALLERYAPIKEY: ${{ secrets.PSGALLERYAPIKEY }}
+      - name: Publish to PSGallery
+        if: "contains(github.event.head_commit.message, ':release:')"
+        run: |
+          $Params = @{
+            Path = ".\_output\$env:GH_PROJECTNAME"
+            NuGetApiKey = "$env:PSGALLERYAPIKEY"
+            ErrorAction = 'Stop'
+            Force = $True
+          }
+          Publish-Module @Params
+        shell: pwsh
+        env:
+          PSGALLERYAPIKEY: ${{ secrets.PSGALLERYAPIKEY }}
 
       - name: Create-Release
         id: create_release
+        if: "contains(github.event.head_commit.message, ':release:')"
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -99,5 +99,19 @@ jobs:
           tag_name: ${{ env.ModuleVersion }}
           release_name:  ${{ env.ReleaseName }}
           body_path: _output\Release-Notes.txt
-          draft: true
+          draft: false
           prerelease: false
+
+      - name: Commit CHANGELOG.md and module manifest
+        if: "contains(github.event.head_commit.message, ':release:')"
+        run: |
+          git config --global user.email "action@github.com"
+          git config --global user.name "GitHub Action"
+          git add CHANGELOG.md
+          git commit -m "Released ${ModuleVersion}: updated CHANGELOG.md"
+      
+      - name: Push commit
+        if: "contains(github.event.head_commit.message, ':release:')"
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
