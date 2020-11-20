@@ -8,13 +8,6 @@ $Script:FileHashRoot = "$BuildRoot\_filehash"
 $Script:Dest_PSD1 = "$OutputRoot\$ModuleName\$ModuleName.psd1"
 $Script:Dest_PSM1 = "$OutputRoot\$ModuleName\$ModuleName.psm1"
 $Script:ModuleConfig = [xml]$(Get-Content -Path '.\Module.Config.xml')
-$Script:Header = @"
-<style>
-TABLE {border-width: 1px; border-style: solid; border-color: black; border-collapse: collapse;}
-TH {border-width: 1px; padding: 3px; border-style: solid; border-color: black; background-color: #6495ED;}
-TD {border-width: 1px; padding: 3px; border-style: solid; border-color: black;}
-</style>
-"@
 
 # Synopsis: Empty the _output and _testresults folders
 Task CleanAndPrep {
@@ -125,34 +118,76 @@ Task CompileHelp {
             New-ExternalHelp -Path "$DocsRoot\about_help" -OutputPath "$OutputRoot\$ModuleName\en-US" -Force | Out-Null
         }
     }
+}
+
+# Synopsis: Copy LICENSE file to the module folder
+Task CopyLicense {
     If (Test-Path -Path "$BuildRoot\LICENSE") {
         Write-Host 'Adding license file'
         Copy-Item -Path "$BuildRoot\LICENSE" -Destination "$OutputRoot\$ModuleName\LICENSE"
     }
 }
 
-Task Build CompileModuleFile, CompileManifestFile, CompileFormats, CompileHelp
+Task Build CompileModuleFile, CompileManifestFile, CompileFormats, CompileHelp, CopyLicense
 
 # Synopsis: Test the Project
-Task Test {
+Task PesterTest {
     $PesterBasic = @{
         Script = @{Path="$TestsRoot\BasicModule.tests.ps1";Parameters=@{Path=$OutputRoot;ProjectName=$ModuleName}}
         PassThru = $True
     }
-    $Results = Invoke-Pester @PesterBasic
-    $FileName = 'Pester-Test-Results'
-    $Results | Export-Clixml -Path "$TestResultsRoot\$FileName.xml"
-    Write-Host "Processing Pester Results"
+    $Script:Results = Invoke-Pester @PesterBasic
+    
+    If ($Results.FailedCount -ne 0) {Throw "One or more Basic Module Tests Failed"}
+    Else {Write-Host "All tests have passed."}
+}
+
+# Synopsis: Convert XML Test Results to Readable HTML format
+Task ConvertTestResultsToHTML {
+    $Script:Header = @"
+<style>
+TABLE {border-width: 1px; border-style: solid; border-color: black; border-collapse: collapse;}
+TH {border-width: 1px; padding: 3px; border-style: solid; border-color: black; background-color: #6495ED;}
+TD {border-width: 1px; padding: 3px; border-style: solid; border-color: black;}
+</style>
+"@
+
     $PreContent = @()
     $PreContent += "Total Count: $($Results.TotalCount)"
     $PreContent += "Passed Count: $($Results.PassedCount)"
     $PreContent += "Failed Count: $($Results.FailedCount)"
     $PreContent += "Duration: $($Results.Time)"
     
+    $FileName = 'Pester-Test-Results'
     $HTML = $($Results.TestResult | ConvertTo-Html -Property Describe,Context,Name,Result,Time,FailureMessage,StackTrace,ErrorRecord -Head $Header -PreContent $($PreContent -join '<BR>') | Out-String)
     $HTML | Out-File -FilePath "$TestResultsRoot\$FileName.html"
-    If ($Results.FailedCount -ne 0) {Throw "One or more Basic Module Tests Failed"}
-    Else {Write-Host "All tests have passed."}
+}
+
+Task Test PesterTest, ConvertTestResultsToHTML
+
+# Synopsis: Get Release Notes
+Task ReleaseNotes {
+    $EmptyChangeLog = $True
+    $ReleaseNotes = ForEach ($Property in $Script:ChangeLog.Unreleased[0].Data.PSObject.Properties.Name) {
+        $Data = $Script:ChangeLog.Unreleased[0].Data.$Property
+        If ($Data) {
+            $EmptyChangeLog = $False
+            Write-Output $Property
+            ForEach ($Item in $Data) {
+                Write-Output ("- {0}" -f $Item)
+            }
+        }
+    }
+    If ($EmptyChangeLog -eq $True -Or $Script:ReleaseNotes.Count -eq 0) {
+        $ReleaseNotes = "None"
+    }
+    Write-Output "Release notes:"
+    Write-Output $ReleaseNotes
+    Set-Content -Value $ReleaseNotes -Path $OutputRoot\Release-Notes.txt -Force
+}
+
+Task UpdateChangeLog {
+    Update-Changelog -ReleaseVersion $($env:ModuleVersion) -LinkMode None
 }
 
 # Synopsis: Produce File Hash for all output files
@@ -166,4 +201,4 @@ Task Hash {
     $HashOutput | Export-Clixml -Path "$FileHashRoot\$HashExportFile"
 }
 
-Task . CleanAndPrep, Build, Test, Hash
+Task . CleanAndPrep, Build, Test, ReleaseNotes, UpdateChangeLog, Hash

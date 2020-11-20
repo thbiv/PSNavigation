@@ -15,5 +15,6 @@
     <module name="Pester" requiredversion="4.10.1" />
     <module name="PSScriptAnalyzer" />
     <module name="platyPS" />
+    <module name="ChangelogManagement" />
   </requiredmodules>
 </config>

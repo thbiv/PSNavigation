@@ -9,13 +9,14 @@ jobs:
   build:
     runs-on: windows-latest
     steps:
-      - name: Clone-Repository
+      - name: Clone Repository
         uses: actions/checkout@v2
 
       - name: Set Environment Variables
         run: |
           [xml]$ModuleConfig = Get-Content Module.Config.xml
           Write-Output ("ModuleVersion={0}" -f $($ModuleConfig.config.manifest.moduleversion)) | Add-Content -Path $env:GITHUB_ENV
+          Write-Output ("ReleaseName=v{0}" -f $($ModuleConfig.config.manifest.moduleversion)) | Add-Content -Path $env:GITHUB_ENV
           Write-Host "ModuleVersion = $($ModuleConfig.config.manifest.moduleversion)"
           $Username, $ProjectName = $env:GITHUB_REPOSITORY -split "/"
           @( 
@@ -65,26 +66,38 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: test-results
-          path: _testresults\*
+          path: _testresults\Pester-Test-Results.html
           retention-days: 1
       
       - name: File Hash Artifacts
         uses: actions/upload-artifact@v2
         with:
           name: file-hash
-          path: _filehash\*
+          path: _filehash\FileHash.xml
           retention-days: 1
 
-      - name: Publish to PSGallery
-        run: |
-          $Params = @{
-            Path = ".\_output\$env:GH_PROJECTNAME"
-            NuGetApiKey = "$env:PSGALLERYAPIKEY"
-            ErrorAction = 'Stop'
-            Force = $True
-            WhatIf = $True
-          }
-          Publish-Module @Params
-        shell: pwsh
+    #  - name: Publish to PSGallery
+    #    run: |
+    #      $Params = @{
+    #        Path = ".\_output\$env:GH_PROJECTNAME"
+    #        NuGetApiKey = "$env:PSGALLERYAPIKEY"
+    #        ErrorAction = 'Stop'
+    #        Force = $True
+    #        WhatIf = $True
+    #      }
+    #      Publish-Module @Params
+    #    shell: pwsh
+    #    env:
+    #      PSGALLERYAPIKEY: ${{ secrets.PSGALLERYAPIKEY }}
+
+      - name: Create-Release
+        id: create_release
+        uses: actions/create-release@v1
         env:
-          PSGALLERYAPIKEY: ${{ secrets.PSGALLERYAPIKEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          tag_name: ${{ env.ModuleVersion }}
+          release_name:  ${{ env.ReleaseName }}
+          body_path: _output\Release-Notes.txt
+          draft: true
+          prerelease: false
