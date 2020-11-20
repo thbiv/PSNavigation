@@ -167,6 +167,7 @@ Task Test PesterTest, ConvertTestResultsToHTML
 
 # Synopsis: Get Release Notes
 Task ReleaseNotes {
+    $ChangeLog = Get-ChangelogData
     $EmptyChangeLog = $True
     $ReleaseNotes = ForEach ($Property in $Script:ChangeLog.Unreleased.Data.PSObject.Properties.Name) {
         $Data = $Script:ChangeLog.Unreleased.Data.$Property
