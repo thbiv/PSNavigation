@@ -169,8 +169,8 @@ Task Test PesterTest, ConvertTestResultsToHTML
 Task ReleaseNotes {
     $ChangeLog = Get-ChangelogData
     $EmptyChangeLog = $True
-    $ReleaseNotes = ForEach ($Property in $Script:ChangeLog.Unreleased.Data.PSObject.Properties.Name) {
-        $Data = $Script:ChangeLog.Unreleased.Data.$Property
+    $ReleaseNotes = ForEach ($Property in $ChangeLog.Unreleased[0].Data.PSObject.Properties.Name) {
+        $Data = $ChangeLog.Unreleased[0].Data.$Property
         If ($Data) {
             $EmptyChangeLog = $False
             Write-Output $Property
@@ -179,7 +179,7 @@ Task ReleaseNotes {
             }
         }
     }
-    If ($EmptyChangeLog -eq $True -Or $Script:ReleaseNotes.Count -eq 0) {
+    If ($EmptyChangeLog -eq $True -Or $ReleaseNotes.Count -eq 0) {
         $ReleaseNotes = "None"
     }
     Write-Output "Release notes:"
