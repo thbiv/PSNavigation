@@ -104,8 +104,6 @@ Task CompileManifestFile {
     New-ModuleManifest @Params
     $Content = Get-Content -Path $Dest_PSD1
     $Content | ForEach-Object {$_.TrimEnd()} | Set-Content -Path $Dest_PSD1 -Force
-    $ModuleConfig.config.manifest.moduleversion = $NewVersion
-    $ModuleConfig.Save('Module.Config.xml')
 }
 
 # Synopsis: Compile the help MAML file from Markdown documents
@@ -207,4 +205,5 @@ Task Hash {
     $HashOutput | Export-Clixml -Path "$FileHashRoot\$HashExportFile"
 }
 
-Task . CleanAndPrep, Build, Test, GetReleaseNotes, UpdateChangeLog, Hash
+Task . CleanAndPrep, Build, Test
+Task Release CleanAndPrep, Build, Test, GetReleaseNotes, UpdateChangeLog, Hash
