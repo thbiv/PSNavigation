@@ -3,7 +3,7 @@ name: Module-Build
 on:
   push:
     branches:
-      - master
+      - idonotexist
 
 jobs:
   build:

@@ -17,7 +17,7 @@
 -   [Usage](#Usage)
 -   [Data File](#Data-File)
 -   [Licensing](#Licensing)
--   [Release Notes](#Release-Notes)
+-   [Change Log](#Change-Log)
 
 ---
 ## Synopsis
@@ -97,6 +97,6 @@ PSNavigation is licensed under the [MIT License](LICENSE)
 
 ---
 
-## Release Notes
+## Change Log
 
-Please refer to [Release Notes](Release-Notes.md)
+Please refer to [Change Log](CHANGELOG.md)
