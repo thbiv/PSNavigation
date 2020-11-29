@@ -29,23 +29,23 @@ This module allows the user to save folder/directory paths (locations), along wi
 
 ## Commands
 
-[Add-NavLocation](docs\Add-NavLocation.md)
+[Add-NavLocation](docs/Add-NavLocation.md)
 
 Adds a directory path and reference ID to the PSNavigation data file.
 
-[Get-NavLocation](docs\Get-NavLocation.md)
+[Get-NavLocation](docs/Get-NavLocation.md)
 
 Lists the saved locations that are stored in the data file.
 
-[Remove-NavLocation](docs\Remove-NavLocation.md)
+[Remove-NavLocation](docs/Remove-NavLocation.md)
 
 Deletes one or more saved locations from the data file.
 
-[Invoke-GoLocation](docs\Invoke-GoLocation.md)
+[Invoke-GoLocation](docs/Invoke-GoLocation.md)
 
 Changes the current powershell console location.
 
-[Invoke-OpenLocation](docs\Invoke-OpenLocation.md)
+[Invoke-OpenLocation](docs/Invoke-OpenLocation.md)
 
 Opens a directory with Windows explorer.
 
